@@ -1,0 +1,28 @@
+# See https://docs.docker.com/compose/compose-file/03-compose-file/ for best practices
+services:
+
+  httpae-iris:
+    image: ${IRIS_IMAGE}:${IRIS_IMAGE_TAG}
+    build:
+      context: .
+      dockerfile: ./build/Dockerfile
+      # image: ls-hc2:latest  # got an error message: Additional property image is not allowed
+      args:
+        IRIS_IMAGE: "${IRIS_IMAGE}"
+        IRIS_IMAGE_TAG: "${IRIS_IMAGE_TAG}"
+    ports:
+      # PWS
+    - "58160:52773"
+    container_name: httpae-iris
+    hostname: iris
+    volumes:
+    - type: bind
+      source: ./shared
+      target: /shared
+    - type: bind
+      source: ./src
+      target: /src
+    environment:
+    - ISC_DATA_DIRECTORY=/shared/durable
+    - ISC_CPF_MERGE_FILE=/shared/merge.cpf
+    # command: ["-a","iris session IRIS < /common/configureIRIS.os"]
